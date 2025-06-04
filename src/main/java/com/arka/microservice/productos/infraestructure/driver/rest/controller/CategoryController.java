@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -40,6 +41,7 @@ public class CategoryController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('admin')")
     public Mono<CategoryResponseDto> createCategory(@Valid @RequestBody CategoryRequestDto req){
         CategoryModel model = mapper.requestToModel(req);
         return service.createCategory(model)
@@ -54,6 +56,7 @@ public class CategoryController {
      */
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('admin')")
     public Mono<CategoryResponseDto> updateCategory(@PathVariable("id") Long id,
                                                     @Valid @RequestBody CategoryRequestDto req){
         CategoryModel model = mapper.requestToModel(req);
@@ -68,6 +71,7 @@ public class CategoryController {
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('admin')")
     public Mono<Void> deleteCategoryById(@PathVariable("id")Long id){
         return service.deleteCategory(id);
     }
