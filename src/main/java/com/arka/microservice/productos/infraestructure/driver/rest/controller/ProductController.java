@@ -4,6 +4,7 @@ import com.arka.microservice.productos.domain.models.ProductModel;
 import com.arka.microservice.productos.domain.ports.in.IProductPortUseCase;
 import com.arka.microservice.productos.infraestructure.driven.r2dbc.repository.IProductCategoryRepository;
 import com.arka.microservice.productos.infraestructure.driver.rest.dto.req.ProductRequestDto;
+import com.arka.microservice.productos.infraestructure.driver.rest.dto.req.StockUpdateRequestDto;
 import com.arka.microservice.productos.infraestructure.driver.rest.dto.resp.ProductListResponseDto;
 import com.arka.microservice.productos.infraestructure.driver.rest.dto.resp.ProductResponseDto;
 import com.arka.microservice.productos.infraestructure.driver.rest.mapper.IProductMapperDto;
@@ -12,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -91,5 +93,18 @@ public class ProductController {
         ProductModel model = mapper.requestToModel(req);
         return serviceP.updateProduct(model, id)
                 .map(mapper::modelToResponse);
+    }
+
+    /**
+     * Endpoint para actualizar el stock
+     * @param productId identificador del producto
+     * @param request objeto donde viene la cantidad a sumar
+     * @return un objeto mono o un mono error
+     */
+    @PutMapping("/{id}/stock")
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<Void> updateStock(@PathVariable("id")Long productId,
+                                  @RequestBody StockUpdateRequestDto request){
+        return serviceP.updateStock(productId, request.getQuantity());
     }
 }

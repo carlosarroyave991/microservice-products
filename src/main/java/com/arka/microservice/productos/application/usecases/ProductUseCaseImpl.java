@@ -1,19 +1,20 @@
 package com.arka.microservice.productos.application.usecases;
 
 import com.arka.microservice.productos.domain.exception.DuplicateResourceException;
-import com.arka.microservice.productos.domain.models.CategoryModel;
-import com.arka.microservice.productos.domain.models.ProductCategoryModel;
-import com.arka.microservice.productos.domain.models.ProductListModel;
-import com.arka.microservice.productos.domain.models.ProductModel;
+import com.arka.microservice.productos.domain.models.*;
 import com.arka.microservice.productos.domain.ports.in.IProductPortUseCase;
 import com.arka.microservice.productos.domain.ports.out.CategoryPersistencePort;
 import com.arka.microservice.productos.domain.ports.out.ProductCategoryPersistencePort;
 import com.arka.microservice.productos.domain.ports.out.ProductPersistencePort;
 import com.arka.microservice.productos.infraestructure.driven.r2dbc.entity.ProductCategoryEntity;
+import com.arka.microservice.productos.infraestructure.driver.rest.dto.req.ProductRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -127,5 +128,22 @@ public class ProductUseCaseImpl implements IProductPortUseCase {
         return service.findById(id)
                 .switchIfEmpty(Mono.error(new DuplicateResourceException(ID_NOT_FOUND)))
                 .flatMap(existing -> service.deleteById(existing.getId()));
+    }
+
+    /** Servicio que permite actualizar el stock de manera reactiva
+     * @param productId identificador el objeto
+     * @param quantity cantidad a sumar al stock
+     * @return objeto mono con la data encontrada o mono error
+     */
+    @Override
+    public Mono<Void> updateStock(Long productId, Integer quantity) {
+        return service.findById(productId)
+                .switchIfEmpty(Mono.error(new DuplicateResourceException(ID_NOT_FOUND)))
+                .flatMap(existing ->{
+                    //suma la cantidad al stock actual
+                    Integer currentStock = existing.getStock() != null ? existing.getStock() : 0;
+                    existing.setStock(currentStock + quantity);
+                    return service.update(existing);
+                }).then();
     }
 }

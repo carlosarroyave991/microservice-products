@@ -1,6 +1,7 @@
 package com.arka.microservice.productos.infraestructure.driven.r2dbc.adapter;
 
 import com.arka.microservice.productos.domain.models.ProductModel;
+import com.arka.microservice.productos.domain.models.ProductStockModel;
 import com.arka.microservice.productos.domain.ports.out.ProductPersistencePort;
 import com.arka.microservice.productos.infraestructure.driven.r2dbc.entity.ProductEntity;
 import com.arka.microservice.productos.infraestructure.driven.r2dbc.mapper.IProductEntityMapper;
@@ -81,5 +82,15 @@ public class ProductAdapterImpl implements ProductPersistencePort {
     public Mono<ProductModel> findById(Long id) {
         return repository.findById(id)
                 .map(mapper::toModel);
+    }
+
+    /** Funcion que actualiza el stock en la base de datos
+     * @param model data con informacion a actualizar
+     * @return mono error o vacio
+     */
+    @Override
+    public Mono<Void> updateStock(ProductModel model) {
+        ProductEntity entity = mapper.toEntity(model);
+        return repository.save(entity).then();
     }
 }

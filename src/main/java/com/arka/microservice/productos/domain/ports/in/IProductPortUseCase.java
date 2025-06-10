@@ -15,4 +15,5 @@ public interface IProductPortUseCase {
     Flux<ProductModel> getAllProducts();
     Mono<ProductModel> createProduct(ProductModel model);
     Mono<Void> deleteProduct(Long id);
+    Mono<Void> updateStock(Long productId, Integer quantity);
 }

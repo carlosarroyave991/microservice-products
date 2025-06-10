@@ -194,6 +194,21 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+            <!-- Plugin de Flyway para migraciones -->
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>9.22.3</version>
+                <configuration>
+                    <url>jdbc:postgresql://localhost:5432/arka</url>
+                    <user>postgres</user>
+                    <password>root</password>
+                    <schemas>micro</schemas>
+                    <outOfOrder>true</outOfOrder>
+                    <validateOnMigrate>false</validateOnMigrate>
+                    <baselineOnMigrate>true</baselineOnMigrate>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

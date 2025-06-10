@@ -36,6 +36,8 @@ public class ResourceServerConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeExchange(exchange -> exchange
+                        // Endpoint de stock permitido sin autenticación (debe ir primero)
+                        .pathMatchers(HttpMethod.PUT, "/api/product/{id}/stock").permitAll()
                         // Endpoints GET para productos: accesibles a roles "client" y "admin"
                         .pathMatchers(HttpMethod.GET, "/api/product", "/api/product/{id}","/api/category/all")
                         .hasAnyRole("client", "admin")

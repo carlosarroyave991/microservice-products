@@ -1,11 +1,4 @@
 -- ================================================
--- Script PostgreSQL corregido y mejorado (versión 2)
--- ================================================
-
--- 1. Crear el esquema (si no existe)
-CREATE SCHEMA IF NOT EXISTS micro;
-
--- ================================================
 -- Tabla micro.category
 -- ================================================
 DROP TABLE IF EXISTS micro.category CASCADE;
@@ -24,7 +17,7 @@ CREATE TABLE micro.category (
 -- ================================================
 DROP TABLE IF EXISTS micro.products CASCADE;
 
-CREATE TABLE micro.products(
+CREATE TABLE micro.products (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100),
     brand VARCHAR(50),
@@ -41,6 +34,8 @@ CREATE TABLE micro.product_category (
     id SERIAL PRIMARY KEY,
     product_id INT NOT NULL,
     category_id INT NOT NULL,
-    CONSTRAINT fk_products FOREIGN KEY (product_id) REFERENCES micro.products(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_categories FOREIGN KEY (category_id) REFERENCES micro.category(id) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT fk_product FOREIGN KEY (product_id)
+        REFERENCES micro.products(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_category FOREIGN KEY (category_id)
+        REFERENCES micro.category(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
