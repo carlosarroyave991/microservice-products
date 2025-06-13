@@ -37,13 +37,13 @@ public class ResourceServerConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeExchange(exchange -> exchange
                         // Endpoint de stock permitido sin autenticación (debe ir primero)
-                        .pathMatchers(HttpMethod.PUT, "/api/product/{id}/stock").permitAll()
+                        //.pathMatchers(HttpMethod.PUT, "/api/product/{id}/stock").permitAll()
                         // Endpoints GET para productos: accesibles a roles "client" y "admin"
                         .pathMatchers(HttpMethod.GET, "/api/product", "/api/product/{id}","/api/category/all")
                         .hasAnyRole("client", "admin")
                         // Endpoints que requieren el rol admin: POST, PUT y DELETE
                         .pathMatchers(HttpMethod.POST, "/api/product/**","/api/category/**","/api/product-category/**").hasRole("admin")
-                        .pathMatchers(HttpMethod.PUT, "/api/product/**","/api/category/**").hasRole("admin")
+                        .pathMatchers(HttpMethod.PUT, "/api/product/**","/api/category/**","/api/product/{id}/stock").hasRole("admin")
                         .pathMatchers(HttpMethod.DELETE, "/api/product/**","/api/category/**").hasRole("admin")
                         // Para cualquier otra petición se requiere autenticación
                         .anyExchange().authenticated()

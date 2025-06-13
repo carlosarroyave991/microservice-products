@@ -1,6 +1,7 @@
 package com.arka.microservice.productos.application.usecases;
 
 import com.arka.microservice.productos.domain.exception.DuplicateResourceException;
+import com.arka.microservice.productos.domain.exception.NotFoundException;
 import com.arka.microservice.productos.domain.models.CategoryModel;
 import com.arka.microservice.productos.domain.ports.in.ICategoryPortUseCase;
 import com.arka.microservice.productos.domain.ports.out.CategoryPersistencePort;
@@ -50,7 +51,7 @@ public class CategoryUseCaseImpl implements ICategoryPortUseCase {
     @Override
     public Flux<CategoryModel> getAllCategories() {
         return service.findAll()
-                .switchIfEmpty(Flux.error(new DuplicateResourceException(DB_EMPTY)));
+                .switchIfEmpty(Flux.error(new NotFoundException(DB_EMPTY)));
     }
 
     /**

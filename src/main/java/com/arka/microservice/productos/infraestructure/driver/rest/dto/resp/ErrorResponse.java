@@ -29,4 +29,36 @@ public class ErrorResponse {
         this.details = details;
         this.timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
     }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public Map<String, Object> getDetails() {
+        return details;
+    }
+
+    public void setDetails(Map<String, Object> details) {
+        this.details = details;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }
