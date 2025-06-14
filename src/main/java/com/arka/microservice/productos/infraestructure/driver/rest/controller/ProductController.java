@@ -71,7 +71,7 @@ public class ProductController {
     }
 
     /**
-     * Endpoint para eliminar una dirección por su ID
+     * Endpoint para eliminar un objeto por su ID
      * @return Un Mono vacío que indica que la operación se completó.
      */
     @DeleteMapping("/{id}")

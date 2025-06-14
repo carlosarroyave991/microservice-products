@@ -1,6 +1,7 @@
 package com.arka.microservice.productos.application.usecases;
 
 import com.arka.microservice.productos.domain.exception.DuplicateResourceException;
+import com.arka.microservice.productos.domain.exception.ValidationException;
 import com.arka.microservice.productos.domain.models.*;
 import com.arka.microservice.productos.domain.ports.in.IProductPortUseCase;
 import com.arka.microservice.productos.domain.ports.out.CategoryPersistencePort;
@@ -20,8 +21,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import static com.arka.microservice.productos.domain.exception.error.CommonErrorCode.DB_EMPTY;
-import static com.arka.microservice.productos.domain.exception.error.CommonErrorCode.ID_NOT_FOUND;
+import static com.arka.microservice.productos.domain.exception.error.CommonErrorCode.*;
 
 /**
  * Clase usada para implementar la logica de negocio sobre cada funcion
@@ -135,6 +135,7 @@ public class ProductUseCaseImpl implements IProductPortUseCase {
      * @param quantity cantidad a sumar al stock
      * @return objeto mono con la data encontrada o mono error
      */
+    @Transactional
     @Override
     public Mono<Void> updateStock(Long productId, Integer quantity) {
         return service.findById(productId)
@@ -142,7 +143,14 @@ public class ProductUseCaseImpl implements IProductPortUseCase {
                 .flatMap(existing ->{
                     //suma la cantidad al stock actual
                     Integer currentStock = existing.getStock() != null ? existing.getStock() : 0;
-                    existing.setStock(currentStock + quantity);
+                    Integer newStock = currentStock + quantity;
+                    
+                    //validar que el stock no sea negativo
+                    if (newStock < 0) {
+                        return Mono.error(new ValidationException(INVALID_STOCK));
+                    }
+                    
+                    existing.setStock(newStock);
                     return service.update(existing);
                 }).then();
     }

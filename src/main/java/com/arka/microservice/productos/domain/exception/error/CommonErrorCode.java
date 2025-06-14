@@ -20,7 +20,7 @@ public enum CommonErrorCode  implements ErrorCode{
     INVALID_PASSWORD("ERR_PASSWORD_INVALID", "Invalid password", HttpStatus.BAD_REQUEST.value(), ErrorCategory.VALIDATION),
     INVALID_USER_TYPE("ERR_USER_TYPE_INVALID", "Invalid user type", HttpStatus.BAD_REQUEST.value(), ErrorCategory.VALIDATION),
     EMPTY_PASSWORD("ERR_PASSWORD_EMPTY", "Password cannot be empty", HttpStatus.BAD_REQUEST.value(), ErrorCategory.VALIDATION),
-
+    INVALID_STOCK("ERR_STOCK_INVALID", "Stock cannot be lessthan 0", HttpStatus.BAD_REQUEST.value(), ErrorCategory.VALIDATION),
 
     // Resource errors
     RESOURCE_NOT_FOUND("ERR_NOT_FOUND", "Resource not found", HttpStatus.NOT_FOUND.value(), ErrorCategory.RESOURCE),
