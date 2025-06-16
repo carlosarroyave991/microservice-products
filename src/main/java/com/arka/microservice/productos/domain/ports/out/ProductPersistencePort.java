@@ -5,6 +5,8 @@ import com.arka.microservice.productos.domain.models.ProductStockModel;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 /**
  * Se encarga de definir las dependencias externas que el nucleo necesita.
  */
@@ -15,4 +17,5 @@ public interface ProductPersistencePort {
     Flux<ProductModel> getAll();
     Mono<Void> deleteById(Long id);
     Mono<Void> updateStock(ProductModel model);
+    Flux<ProductModel> findByIds(List<Long> ids);
 }

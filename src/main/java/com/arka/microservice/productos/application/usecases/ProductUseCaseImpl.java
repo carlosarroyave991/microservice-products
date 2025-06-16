@@ -154,4 +154,17 @@ public class ProductUseCaseImpl implements IProductPortUseCase {
                     return service.update(existing);
                 }).then();
     }
+    
+    /**
+     * Servicio para obtener múltiples productos según una lista de IDs
+     * @param ids lista de identificadores de productos a buscar
+     * @return Flux que emite los productos encontrados
+     */
+    @Override
+    public Flux<ProductModel> getAllByIds(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Flux.error(new ValidationException(INVALID_INPUT));
+        }
+        return service.findByIds(ids);
+    }
 }

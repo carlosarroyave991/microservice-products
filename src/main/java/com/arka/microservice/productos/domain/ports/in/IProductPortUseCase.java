@@ -5,6 +5,8 @@ import com.arka.microservice.productos.domain.models.ProductModel;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 /**
  * Se definen las operaciones REST que pueden utilizar para interactuar
  * con el nucreo del sistema.
@@ -16,4 +18,5 @@ public interface IProductPortUseCase {
     Mono<ProductModel> createProduct(ProductModel model);
     Mono<Void> deleteProduct(Long id);
     Mono<Void> updateStock(Long productId, Integer quantity);
+    Flux<ProductModel> getAllByIds(List<Long> ids);
 }

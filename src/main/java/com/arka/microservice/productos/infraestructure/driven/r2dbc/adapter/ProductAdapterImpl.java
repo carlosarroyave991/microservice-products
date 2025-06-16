@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 /**
  * El adaptador se encargara de conectar ambas capas, pasando la informacion de la entidad
  * al modelo de dominio.
@@ -92,5 +94,15 @@ public class ProductAdapterImpl implements ProductPersistencePort {
     public Mono<Void> updateStock(ProductModel model) {
         ProductEntity entity = mapper.toEntity(model);
         return repository.save(entity).then();
+    }
+
+    /**Funcion que consulta productos por una lista de IDs
+     * @param ids identificadores de los objetos
+     * @return Flux o vacio
+     */
+    @Override
+    public Flux<ProductModel> findByIds(List<Long> ids) {
+        return repository.findAllByIdIn(ids)
+                .map(mapper::toModel);
     }
 }

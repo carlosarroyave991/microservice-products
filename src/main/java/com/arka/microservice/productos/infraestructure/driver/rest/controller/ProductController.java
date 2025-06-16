@@ -2,7 +2,7 @@ package com.arka.microservice.productos.infraestructure.driver.rest.controller;
 
 import com.arka.microservice.productos.domain.models.ProductModel;
 import com.arka.microservice.productos.domain.ports.in.IProductPortUseCase;
-import com.arka.microservice.productos.infraestructure.driven.r2dbc.repository.IProductCategoryRepository;
+import com.arka.microservice.productos.infraestructure.driver.rest.dto.req.ProductIdsRequestDto;
 import com.arka.microservice.productos.infraestructure.driver.rest.dto.req.ProductRequestDto;
 import com.arka.microservice.productos.infraestructure.driver.rest.dto.req.StockUpdateRequestDto;
 import com.arka.microservice.productos.infraestructure.driver.rest.dto.resp.ProductListResponseDto;
@@ -13,7 +13,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -106,5 +105,17 @@ public class ProductController {
     public Mono<Void> updateStock(@PathVariable("id")Long productId,
                                   @RequestBody StockUpdateRequestDto request){
         return serviceP.updateStock(productId, request.getQuantity());
+    }
+    
+    /**
+     * Endpoint para obtener productos por una lista de IDs
+     * @param request objeto que contiene la lista de IDs de productos
+     * @return Flux de productos encontrados
+     */
+    @PostMapping("/by-ids")
+    @ResponseStatus(HttpStatus.OK)
+    public Flux<ProductResponseDto> getProductsByIds(@Valid @RequestBody ProductIdsRequestDto request) {
+        return serviceP.getAllByIds(request.getIds())
+                .map(mapper::modelToResponse);
     }
 }
