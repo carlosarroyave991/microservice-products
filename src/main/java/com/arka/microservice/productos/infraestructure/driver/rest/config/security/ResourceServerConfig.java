@@ -36,6 +36,8 @@ public class ResourceServerConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeExchange(exchange -> exchange
+                        // Rutas de Swagger permitidas sin autenticación
+                        .pathMatchers("/swagger", "/swagger/**", "/api-docs", "/api-docs/**", "/webjars/**").permitAll()
                         // Endpoint de stock permitido sin autenticación (debe ir primero)
                         //.pathMatchers(HttpMethod.PUT, "/api/product/{id}/stock").permitAll()
                         // Endpoints GET para productos: accesibles a roles "client" y "admin"

@@ -1,6 +1,7 @@
 package com.arka.microservice.productos.domain.models;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.springframework.data.relational.core.mapping.Column;
 
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
  * Entidad product creada para el dominio.
  * La idea es que sea inmutable para garantizar consistencia.
  */
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductModel {

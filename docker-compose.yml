@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  # 1) Base de datos compartida
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: arka
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - arka-net
+
+  # 3) Microservicio de productos
+  arka-products:
+    build:
+      context: .     # ruta al código de products
+      dockerfile: Dockerfile
+    image: productos-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/arka
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - db
+    ports:
+      - "8081:8081"
+    networks:
+      - arka-net
+
+volumes:
+  db_data:
+
+networks:
+  arka-net:
+    driver: bridge
+
+#  docker-compose up -d --no-deps --build arka-products

@@ -5,6 +5,10 @@ import com.arka.microservice.productos.domain.ports.in.ICategoryPortUseCase;
 import com.arka.microservice.productos.infraestructure.driver.rest.dto.req.CategoryRequestDto;
 import com.arka.microservice.productos.infraestructure.driver.rest.dto.resp.CategoryResponseDto;
 import com.arka.microservice.productos.infraestructure.driver.rest.mapper.ICategoryMapperDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +26,10 @@ public class CategoryController {
     private final ICategoryPortUseCase service;
     private final ICategoryMapperDto mapper;
 
-    /**
-     * Endpoint para obtener todas los objetos.
-     * @return Un Flux de objetos como DTO.
-     */
+    @Operation(summary = "Obtener todas las categorías", description = "Retorna una lista de todas las categorías disponibles")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de categorías obtenida exitosamente")
+    })
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     public Flux<CategoryResponseDto> getAllCategories(){
@@ -33,46 +37,51 @@ public class CategoryController {
                 .map(mapper::modelToResponse);
     }
 
-    /**
-     * Endpoint para crear un nuevo Objeto.
-     * La validación de datos (por ejemplo, @Valid) se realiza en el DTO recibido.
-     * @param req Datos para construir el objeto.
-     * @return el objeto creado en forma de DTO.
-     */
+    @Operation(summary = "Crear nueva categoría", description = "Crea una nueva categoría en el sistema (requiere rol de administrador)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Categoría creada exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado - se requiere rol de administrador")
+    })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('admin')")
-    public Mono<CategoryResponseDto> createCategory(@Valid @RequestBody CategoryRequestDto req){
+    public Mono<CategoryResponseDto> createCategory(
+            @Parameter(description = "Datos de la categoría a crear", required = true) @Valid @RequestBody CategoryRequestDto req){
         CategoryModel model = mapper.requestToModel(req);
         return service.createCategory(model)
                 .map(mapper::modelToResponse);
     }
 
-    /**
-     * Endpoint para actualizar un objeto.
-     * @param id ID del objeto a actualizar.
-     * @param req Datos del objeto actualizados.
-     * @return objeto actualizado.
-     */
+    @Operation(summary = "Actualizar categoría", description = "Actualiza los datos de una categoría existente (requiere rol de administrador)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Categoría actualizada exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Categoría no encontrada"),
+            @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado - se requiere rol de administrador")
+    })
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('admin')")
-    public Mono<CategoryResponseDto> updateCategory(@PathVariable("id") Long id,
-                                                    @Valid @RequestBody CategoryRequestDto req){
+    public Mono<CategoryResponseDto> updateCategory(
+            @Parameter(description = "ID de la categoría a actualizar", required = true) @PathVariable("id") Long id,
+            @Parameter(description = "Datos actualizados de la categoría", required = true) @Valid @RequestBody CategoryRequestDto req){
         CategoryModel model = mapper.requestToModel(req);
         return service.updateCategory(model, id)
                 .map(mapper::modelToResponse);
     }
 
-    /**
-     * Endpoint para eliminar un objeto por su ID.
-     * @param id ID del objeto a eliminar.
-     * @return Respuesta 204 si se elimina correctamente.
-     */
+    @Operation(summary = "Eliminar categoría", description = "Elimina una categoría del sistema por su ID (requiere rol de administrador)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Categoría eliminada exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Categoría no encontrada"),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado - se requiere rol de administrador")
+    })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('admin')")
-    public Mono<Void> deleteCategoryById(@PathVariable("id")Long id){
+    public Mono<Void> deleteCategoryById(
+            @Parameter(description = "ID de la categoría a eliminar", required = true) @PathVariable("id")Long id){
         return service.deleteCategory(id);
     }
 

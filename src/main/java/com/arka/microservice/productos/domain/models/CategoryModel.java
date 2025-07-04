@@ -1,6 +1,7 @@
 package com.arka.microservice.productos.domain.models;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -10,6 +11,7 @@ import java.util.Date;
  * Entidad category creada para el dominio.
  * La idea es que sea inmutable para garantizar consistencia.
  */
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class CategoryModel {
