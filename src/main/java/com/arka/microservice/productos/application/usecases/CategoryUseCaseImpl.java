@@ -7,6 +7,7 @@ import com.arka.microservice.productos.domain.ports.in.ICategoryPortUseCase;
 import com.arka.microservice.productos.domain.ports.out.CategoryPersistencePort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -59,6 +60,7 @@ public class CategoryUseCaseImpl implements ICategoryPortUseCase {
      * @param model objeto category con los parámetros necesarios para la creación.
      * @return retorna un Mono con la categoria creada o un error.
      */
+    @Transactional
     @Override
     public Mono<CategoryModel> createCategory(CategoryModel model) {
         model.setCreatedDate(LocalDate.now());
